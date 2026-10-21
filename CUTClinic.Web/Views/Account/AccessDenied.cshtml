@@ -1,0 +1,21 @@
+﻿@{
+    ViewData["Title"] = "Access Denied";
+}
+
+<div class="container mt-5">
+    <div class="alert alert-warning">
+        <h2>Access Denied</h2>
+
+        <p>
+            Your account does not have permission to access
+            this clinic staff page.
+        </p>
+
+        <a asp-controller="Account"
+           asp-action="Login"
+           class="btn btn-primary">
+            Return to Login
+        </a>
+    </div>
+</div>
+

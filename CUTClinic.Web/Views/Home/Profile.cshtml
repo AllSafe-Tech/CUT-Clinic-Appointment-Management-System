@@ -1,0 +1,151 @@
+﻿
+@model CUTClinic.Web.ViewModels.AdminProfileViewModel
+
+@{
+    ViewData["Title"] = "Admin Profile";
+}
+
+<!-- Main profile page container -->
+<div class="container py-4 py-md-5">
+
+    <div class="row justify-content-center">
+        <div class="col-12 col-md-9 col-lg-7 col-xl-6">
+
+            <!-- Profile heading -->
+            <div class="mb-4">
+                <h1 class="h3 fw-bold mb-2">Admin Profile</h1>
+                <p class="text-muted mb-0">
+                    View your account information and security details.
+                </p>
+            </div>
+
+            <!-- Profile information card -->
+            <div class="card border-0 shadow-sm rounded-4">
+
+                <!-- Profile card header -->
+                <div class="card-header bg-primary text-white p-4 rounded-top-4">
+                    <div class="d-flex align-items-center gap-3">
+
+                        <!-- Initials avatar; no uploaded profile photo required -->
+                        <div class="rounded-circle bg-white text-primary
+                                    d-flex align-items-center justify-content-center
+                                    fw-bold fs-3"
+                             style="width: 64px; height: 64px;"
+                             aria-hidden="true">
+                            @{
+                                // Generate initials from the user's display name.
+                                var initials = string.Join(
+                                    "",
+                                    (Model.FullName ?? "")
+                                        .Split(
+                                            ' ',
+                                            StringSplitOptions.RemoveEmptyEntries)
+                                        .Take(2)
+                                        .Select(part =>
+                                            part.Substring(0, 1).ToUpperInvariant()));
+
+                                if (string.IsNullOrWhiteSpace(initials))
+                                {
+                                    initials = "U";
+                                }
+                            }
+                            @initials
+                        </div>
+
+                        <div>
+                            <h2 class="h5 fw-bold mb-1">
+                                @Model.FullName
+                            </h2>
+                            <span class="small">
+                                @Model.Role
+                            </span>
+                        </div>
+
+                    </div>
+                </div>
+
+                <!-- Account details -->
+                <div class="card-body p-4">
+
+                    <h3 class="h6 fw-bold mb-3">Account Information</h3>
+
+                    <div class="mb-4">
+                        <label class="form-label text-muted small mb-1">
+                            Full Name
+                        </label>
+                        <div class="form-control bg-light">
+                            @Model.FullName
+                        </div>
+                    </div>
+
+                    <div class="mb-4">
+                        <label class="form-label text-muted small mb-1">
+                            Email Address
+                        </label>
+                        <div class="form-control bg-light text-break">
+                            @Model.Email
+                        </div>
+                    </div>
+
+                    <div class="mb-4">
+                        <label class="form-label text-muted small mb-1">
+                            Account Role
+                        </label>
+                        <div class="form-control bg-light">
+                            @Model.Role
+                        </div>
+                    </div>
+
+                    <!-- Security information -->
+                    <div class="rounded-3 border p-3 mb-4">
+                        <div class="d-flex align-items-start gap-2">
+                            <span class="text-success fs-5"
+                                  aria-hidden="true">&#10003;</span>
+                            <div>
+                                <h3 class="h6 fw-bold mb-1">
+                                    Account Security
+                                </h3>
+                                <p class="small text-muted mb-0">
+                                    You are viewing the account currently
+                                    authenticated by the CUT Clinic staff system.
+                                </p>
+                            </div>
+                        </div>
+                    </div>
+
+                    <!-- Bottom logout area -->
+                    <div class="border-top pt-4 mt-4">
+                        <h3 class="h6 fw-bold mb-2">Sign Out</h3>
+                        <p class="text-muted small">
+                            Log out when you have finished using the clinic system.
+                        </p>
+
+                        <!-- Uses the existing protected POST logout action. -->
+                        <form asp-controller="Account"
+                              asp-action="Logout"
+                              method="post">
+
+                            @Html.AntiForgeryToken()
+
+                            <button type="submit"
+                                    class="btn btn-danger w-100 py-2">
+                                Log Out
+                            </button>
+                        </form>
+                    </div>
+
+                </div>
+            </div>
+
+            <!-- Return to the dashboard -->
+            <div class="mt-3">
+                <a asp-controller="Home"
+                   asp-action="Index"
+                   class="btn btn-outline-secondary">
+                    &larr; Back to Dashboard
+                </a>
+            </div>
+
+        </div>
+    </div>
+</div>

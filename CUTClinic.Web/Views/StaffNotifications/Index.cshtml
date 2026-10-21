@@ -1,0 +1,156 @@
+﻿
+@* Displays staff notifications and allows unread notifications to be marked as read. *@
+@model List<CUTClinic.Web.Models.StaffNotificationItem>
+
+@using System
+
+@{
+    ViewData["Title"] = "Staff Notifications";
+
+    // Count unread notifications for the summary badge.
+    int unreadCount = Model.Count(notification => !notification.IsRead);
+}
+
+<div class="container py-4">
+
+    @* Page heading and unread summary. *@
+    <div class="d-flex flex-wrap justify-content-between align-items-center gap-3 mb-4">
+        <div>
+            <h1 class="h3 mb-1">Staff Notifications</h1>
+            <p class="text-muted mb-0">
+                View new appointment request alerts.
+            </p>
+        </div>
+
+        <span class="badge rounded-pill text-bg-primary fs-6">
+            @unreadCount unread
+        </span>
+    </div>
+
+    @* Show feedback returned by the controller after an action. *@
+    @if (TempData["SuccessMessage"] is string successMessage)
+    {
+        <div class="alert alert-success" role="status">
+            @successMessage
+        </div>
+    }
+
+    @if (TempData["ErrorMessage"] is string errorMessage)
+    {
+        <div class="alert alert-danger" role="alert">
+            @errorMessage
+        </div>
+    }
+
+    @* Display an empty state when there are no notifications. *@
+    @if (Model.Count == 0)
+    {
+        <div class="card shadow-sm">
+            <div class="card-body text-center py-5">
+                <div class="mb-3">
+                    <i class="bi bi-bell display-4 text-muted"
+                       aria-hidden="true"></i>
+                </div>
+
+                <h2 class="h5">No notifications yet</h2>
+
+                <p class="text-muted mb-0">
+                    New appointment request alerts will appear here.
+                </p>
+            </div>
+        </div>
+    }
+    else
+    {
+        @* Each card represents one notification returned by Supabase. *@
+        <div class="d-flex flex-column gap-3">
+
+            @foreach (var notification in Model)
+            {
+                // Convert the timestamp explicitly to South African time (UTC+2).
+                // Format the complete expression inside Razor to prevent code
+                // such as .ToLocalTime() or .ToString(...) appearing on the page.
+                string receivedDateTime = notification.CreatedAt
+                    .ToOffset(TimeSpan.FromHours(2))
+                    .ToString("dd MMM yyyy, HH:mm");
+
+                <article class="card shadow-sm @(notification.IsRead ? "" : "border-primary")">
+                    <div class="card-body">
+                        <div class="d-flex flex-column flex-md-row justify-content-between gap-3">
+
+                            <div class="flex-grow-1">
+                                <div class="d-flex flex-wrap align-items-center gap-2 mb-2">
+
+                                    <h2 class="h6 mb-0">
+                                        @notification.Message
+                                    </h2>
+
+                                    @if (!notification.IsRead)
+                                    {
+                                        <span class="badge text-bg-primary">
+                                            New
+                                        </span>
+                                    }
+                                    else
+                                    {
+                                        <span class="badge text-bg-secondary">
+                                            Read
+                                        </span>
+                                    }
+                                </div>
+
+                                @* Display only the formatted date and time. *@
+                                <p class="small text-muted mb-2">
+                                    <i class="bi bi-calendar3"
+                                       aria-hidden="true"></i>
+                                    Received @receivedDateTime
+                                </p>
+
+                                @if (notification.AppointmentId.HasValue)
+                                {
+                                    <p class="small text-muted mb-0">
+                                        Appointment reference:
+                                        <span class="font-monospace">
+                                            @notification.AppointmentId.Value
+                                        </span>
+                                    </p>
+                                }
+                            </div>
+
+                            @* Only unread notifications need a read action. *@
+                            @if (!notification.IsRead)
+                            {
+                                <div class="align-self-start">
+                                    <form asp-controller="StaffNotifications"
+                                          asp-action="MarkAsRead"
+                                          method="post">
+
+                                        @Html.AntiForgeryToken()
+
+                                        <input type="hidden"
+                                               name="id"
+                                               value="@notification.NotificationId" />
+
+                                        <button type="submit"
+                                                class="btn btn-outline-primary btn-sm">
+                                            Mark as read
+                                        </button>
+                                    </form>
+                                </div>
+                            }
+                        </div>
+                    </div>
+                </article>
+            }
+        </div>
+    }
+
+    <div class="mt-4">
+        <a asp-controller="Home"
+           asp-action="Index"
+           class="btn btn-outline-secondary">
+            <i class="bi bi-arrow-left" aria-hidden="true"></i>
+            Back to Dashboard
+        </a>
+    </div>
+</div>

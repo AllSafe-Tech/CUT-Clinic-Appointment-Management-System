@@ -1,0 +1,357 @@
+﻿
+@* Displays appointment requests and provides search and filtering. *@
+@model List<CUTClinic.Web.Models.AppointmentDashboardItem>
+
+@using System
+
+@{
+    ViewData["Title"] = "Appointment Requests";
+
+    // Read all filters submitted through the URL.
+    string searchTerm = Context.Request.Query["search"].ToString();
+    string selectedStatus = Context.Request.Query["status"].ToString();
+    string dateFrom = Context.Request.Query["dateFrom"].ToString();
+    string dateTo = Context.Request.Query["dateTo"].ToString();
+
+    // Parse date filters safely. Invalid or empty values are ignored.
+    DateOnly? fromDate = DateOnly.TryParse(dateFrom, out var parsedFrom)
+        ? parsedFrom
+        : null;
+
+    DateOnly? toDate = DateOnly.TryParse(dateTo, out var parsedTo)
+        ? parsedTo
+        : null;
+
+    // Filter the existing records in memory without changing Supabase.
+    var filteredAppointments = Model.Where(appointment =>
+        (
+            string.IsNullOrWhiteSpace(searchTerm) ||
+            (
+                appointment.Student != null &&
+                (
+                    ($"{appointment.Student.FirstName} {appointment.Student.LastName}")
+                        .Contains(searchTerm, StringComparison.OrdinalIgnoreCase) ||
+                    (appointment.Student.StudentNumber ?? "")
+                        .Contains(searchTerm, StringComparison.OrdinalIgnoreCase) ||
+                    (appointment.Student.Email ?? "")
+                        .Contains(searchTerm, StringComparison.OrdinalIgnoreCase)
+                )
+            )
+        ) &&
+        (
+            string.IsNullOrWhiteSpace(selectedStatus) ||
+            string.Equals(
+                appointment.Status,
+                selectedStatus,
+                StringComparison.OrdinalIgnoreCase)
+        ) &&
+        (
+            !fromDate.HasValue ||
+            (appointment.AppointmentDate.HasValue &&
+             appointment.AppointmentDate.Value >= fromDate.Value)
+        ) &&
+        (
+            !toDate.HasValue ||
+            (appointment.AppointmentDate.HasValue &&
+             appointment.AppointmentDate.Value <= toDate.Value)
+        )
+    ).ToList();
+}
+
+<div class="container-fluid py-4">
+
+    @* Page heading and navigation. *@
+    <div class="d-flex flex-wrap justify-content-between align-items-center gap-3 mb-4">
+        <div>
+            <h1 class="h3 fw-bold mb-1">Appointment Requests</h1>
+            <p class="text-secondary mb-0">
+                Search, filter, and review student appointment requests.
+            </p>
+        </div>
+
+        <a asp-controller="Home"
+           asp-action="Index"
+           class="btn btn-outline-primary">
+            Back to Dashboard
+        </a>
+    </div>
+
+    @* Display feedback messages from controller actions. *@
+    @if (TempData["Success"] is string successMessage)
+    {
+        <div class="alert alert-success" role="status">
+            @successMessage
+        </div>
+    }
+
+    @if (TempData["Error"] is string errorMessage)
+    {
+        <div class="alert alert-danger" role="alert">
+            @errorMessage
+        </div>
+    }
+
+    @if (TempData["Warning"] is string warningMessage)
+    {
+        <div class="alert alert-warning" role="alert">
+            @warningMessage
+        </div>
+    }
+
+    @if (ViewBag.ErrorMessage != null)
+    {
+        <div class="alert alert-warning" role="alert">
+            @ViewBag.ErrorMessage
+        </div>
+    }
+
+    @* Summary cards count all loaded appointments, regardless of filters. *@
+    <div class="row g-3 mb-4">
+        <div class="col-sm-6 col-xl-3">
+            <div class="card border-0 shadow-sm h-100">
+                <div class="card-body">
+                    <p class="text-secondary small mb-1">All Requests</p>
+                    <h2 class="h3 fw-bold mb-0">@Model.Count</h2>
+                </div>
+            </div>
+        </div>
+
+        <div class="col-sm-6 col-xl-3">
+            <div class="card border-0 shadow-sm h-100">
+                <div class="card-body">
+                    <p class="text-secondary small mb-1">Pending</p>
+                    <h2 class="h3 fw-bold mb-0">
+                        @Model.Count(a => string.Equals(
+                            a.Status, "pending",
+                            StringComparison.OrdinalIgnoreCase))
+                    </h2>
+                </div>
+            </div>
+        </div>
+
+        <div class="col-sm-6 col-xl-3">
+            <div class="card border-0 shadow-sm h-100">
+                <div class="card-body">
+                    <p class="text-secondary small mb-1">Approved</p>
+                    <h2 class="h3 fw-bold mb-0">
+                        @Model.Count(a => string.Equals(
+                            a.Status, "approved",
+                            StringComparison.OrdinalIgnoreCase))
+                    </h2>
+                </div>
+            </div>
+        </div>
+
+        <div class="col-sm-6 col-xl-3">
+            <div class="card border-0 shadow-sm h-100">
+                <div class="card-body">
+                    <p class="text-secondary small mb-1">Rejected</p>
+                    <h2 class="h3 fw-bold mb-0">
+                        @Model.Count(a => string.Equals(
+                            a.Status, "rejected",
+                            StringComparison.OrdinalIgnoreCase))
+                    </h2>
+                </div>
+            </div>
+        </div>
+    </div>
+
+    @* Search and filtering form. *@
+    <div class="card border-0 shadow-sm">
+        <div class="card-body border-bottom">
+            <form method="get"
+                  asp-controller="AppointmentRequests"
+                  asp-action="Index"
+                  class="row g-3 align-items-end">
+
+                <div class="col-md-4">
+                    <label for="search" class="form-label">
+                        Search student
+                    </label>
+                    <input id="search"
+                           name="search"
+                           type="search"
+                           value="@searchTerm"
+                           class="form-control"
+                           placeholder="Name, number, or email" />
+                </div>
+
+                <div class="col-md-2">
+                    <label for="status" class="form-label">Status</label>
+                    <select id="status" name="status" class="form-select">
+                        <option value="">All statuses</option>
+                        <option value="pending" selected="@(selectedStatus == "pending")">Pending</option>
+                        <option value="approved" selected="@(selectedStatus == "approved")">Approved</option>
+                        <option value="rejected" selected="@(selectedStatus == "rejected")">Rejected</option>
+                        <option value="cancelled" selected="@(selectedStatus == "cancelled")">Cancelled</option>
+                        <option value="completed" selected="@(selectedStatus == "completed")">Completed</option>
+                    </select>
+                </div>
+
+                <div class="col-md-2">
+                    <label for="dateFrom" class="form-label">
+                        Appointment from
+                    </label>
+                    <input id="dateFrom"
+                           name="dateFrom"
+                           type="date"
+                           value="@dateFrom"
+                           class="form-control" />
+                </div>
+
+                <div class="col-md-2">
+                    <label for="dateTo" class="form-label">
+                        Appointment to
+                    </label>
+                    <input id="dateTo"
+                           name="dateTo"
+                           type="date"
+                           value="@dateTo"
+                           class="form-control" />
+                </div>
+
+                <div class="col-md-2 d-flex gap-2">
+                    <button type="submit" class="btn btn-primary">
+                        Apply
+                    </button>
+
+                    <a asp-controller="AppointmentRequests"
+                       asp-action="Index"
+                       class="btn btn-outline-secondary">
+                        Reset
+                    </a>
+                </div>
+            </form>
+        </div>
+
+        @* Appointment results table. *@
+        <div class="table-responsive">
+            <table class="table table-hover align-middle mb-0">
+                <thead class="table-light">
+                    <tr>
+                        <th class="px-3">Student</th>
+                        <th>Service</th>
+                        <th>Date Submitted</th>
+                        <th>Appointment Date</th>
+                        <th>Status</th>
+                        <th class="text-end px-3">Details</th>
+                    </tr>
+                </thead>
+
+                <tbody>
+                    @if (filteredAppointments.Count == 0)
+                    {
+                        <tr>
+                            <td colspan="6" class="text-center py-5">
+                                <h2 class="h6 fw-bold">No requests found</h2>
+                                <p class="text-secondary mb-0">
+                                    Try changing your search, status, or date range.
+                                </p>
+                            </td>
+                        </tr>
+                    }
+                    else
+                    {
+                        @foreach (var appointment in filteredAppointments)
+                        {
+                            // Assign a badge style based on appointment status.
+                            string status = appointment.Status ?? "pending";
+
+                            string badgeClass = status.ToLowerInvariant() switch
+                            {
+                                "approved" => "text-bg-success",
+                                "rejected" => "text-bg-danger",
+                                "cancelled" => "text-bg-secondary",
+                                "completed" => "text-bg-primary",
+                                _ => "text-bg-warning"
+                            };
+
+                            <tr>
+                                <td class="px-3">
+                                    <div class="fw-semibold">
+                                        @(appointment.Student == null
+                                            ? "Student details unavailable"
+                                            : $"{appointment.Student.FirstName} {appointment.Student.LastName}")
+                                    </div>
+
+                                    <small class="text-secondary">
+                                        @(appointment.Student?.StudentNumber
+                                            ?? "No student number")
+                                    </small>
+                                </td>
+
+                                <td>
+                                    @(string.IsNullOrWhiteSpace(appointment.ServiceName)
+                                        ? "Not specified"
+                                        : appointment.ServiceName)
+                                </td>
+
+                                @* Explicitly format the full timestamp as South African time. *@
+                                <td>
+                                    <div>
+                                        @(appointment.CreatedAt
+                                            .ToOffset(TimeSpan.FromHours(2))
+                                            .ToString("dd MMM yyyy"))
+                                    </div>
+                                    <div class="small text-secondary">
+                                        @(appointment.CreatedAt
+                                            .ToOffset(TimeSpan.FromHours(2))
+                                            .ToString("HH:mm"))
+                                    </div>
+                                </td>
+
+                                <td>
+                                    @if (appointment.AppointmentDate.HasValue)
+                                    {
+                                        <div>
+                                            @(appointment.AppointmentDate.Value.ToString("dd MMM yyyy"))
+                                        </div>
+
+                                        @if (appointment.AppointmentTime.HasValue)
+                                        {
+                                            <div class="small text-secondary">
+                                                @(appointment.AppointmentTime.Value.ToString("HH:mm"))
+                                            </div>
+                                        }
+                                        else
+                                        {
+                                            <div class="small text-secondary">
+                                                Time not assigned
+                                            </div>
+                                        }
+                                    }
+                                    else
+                                    {
+                                        <span class="text-secondary">
+                                            Not scheduled
+                                        </span>
+                                    }
+                                </td>
+
+                                <td>
+                                    <span class="badge @badgeClass">
+                                        @status
+                                    </span>
+                                </td>
+
+                                <td class="text-end px-3">
+                                    <a asp-controller="AppointmentRequests"
+                                       asp-action="Details"
+                                       asp-route-id="@appointment.AppointmentId"
+                                       class="btn btn-sm btn-outline-primary">
+                                        View
+                                    </a>
+                                </td>
+                            </tr>
+                        }
+                    }
+                </tbody>
+            </table>
+        </div>
+
+        @* Show the filtered record count. *@
+        <div class="card-footer bg-white text-secondary small">
+            Showing @filteredAppointments.Count of @Model.Count requests
+        </div>
+    </div>
+</div>

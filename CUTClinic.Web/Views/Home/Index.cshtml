@@ -1,0 +1,540 @@
+﻿
+@model CUTClinic.Web.ViewModels.DashboardViewModel
+
+@{
+    ViewData["Title"] = "Clinic Dashboard";
+
+    // Format the current date for the dashboard heading.
+    string currentDate = DateTime.Now.ToString("dddd, dd MMMM yyyy");
+}
+
+<style>
+    /* Dashboard-only styling; does not change the shared application layout. */
+    .clinic-dashboard {
+        color: #243247;
+        padding-top: 1.75rem;
+        padding-bottom: 2.5rem;
+    }
+
+    .dashboard-heading {
+        color: #172b4d;
+        font-weight: 700;
+        letter-spacing: -0.6px;
+    }
+
+    .dashboard-subtitle {
+        color: #718096;
+        font-size: 0.94rem;
+    }
+
+    .dashboard-date {
+        color: #64748b;
+        font-size: 0.85rem;
+        white-space: nowrap;
+    }
+
+    /* Minimal statistic cards with a consistent height and spacing. */
+    .stat-card {
+        height: 100%;
+        background: #ffffff;
+        border: 1px solid #e7ecf2;
+        border-radius: 12px;
+        padding: 1.15rem;
+        transition: box-shadow 0.2s ease, transform 0.2s ease;
+    }
+
+    .stat-card:hover {
+        box-shadow: 0 5px 18px rgba(27, 45, 75, 0.07);
+        transform: translateY(-2px);
+    }
+
+    .stat-card-top {
+        display: flex;
+        justify-content: space-between;
+        align-items: center;
+        gap: 0.75rem;
+        margin-bottom: 1.1rem;
+    }
+
+    .stat-label {
+        color: #64748b;
+        font-size: 0.84rem;
+        font-weight: 600;
+        margin: 0;
+    }
+
+    .stat-icon {
+        width: 38px;
+        height: 38px;
+        display: inline-flex;
+        align-items: center;
+        justify-content: center;
+        border-radius: 10px;
+        font-size: 1rem;
+        font-weight: 700;
+        flex-shrink: 0;
+    }
+
+    .icon-blue {
+        background: #edf4ff;
+        color: #3468c0;
+    }
+
+    .icon-amber {
+        background: #fff6e5;
+        color: #a66b08;
+    }
+
+    .icon-green {
+        background: #eaf7ef;
+        color: #25804c;
+    }
+
+    .icon-purple {
+        background: #f2edff;
+        color: #7252b8;
+    }
+
+    .icon-red {
+        background: #fff0ef;
+        color: #bf4848;
+    }
+
+    .icon-gray {
+        background: #f0f3f7;
+        color: #596579;
+    }
+
+    .stat-value {
+        color: #172b4d;
+        font-size: 2rem;
+        line-height: 1.15;
+        font-weight: 700;
+        letter-spacing: -0.8px;
+        margin: 0 0 0.4rem;
+    }
+
+    .stat-caption {
+        color: #8995a7;
+        font-size: 0.78rem;
+        margin: 0;
+    }
+
+    /* The appointment table is contained in a separate white panel. */
+    .dashboard-panel {
+        background: #ffffff;
+        border: 1px solid #e7ecf2;
+        border-radius: 12px;
+        overflow: hidden;
+    }
+
+    .panel-header {
+        display: flex;
+        justify-content: space-between;
+        align-items: center;
+        gap: 1rem;
+        padding: 1.15rem 1.35rem;
+        border-bottom: 1px solid #edf0f4;
+    }
+
+    .panel-title {
+        color: #243247;
+        font-size: 1rem;
+        font-weight: 700;
+        margin: 0;
+    }
+
+    .panel-subtitle {
+        color: #8995a7;
+        font-size: 0.8rem;
+        margin: 0.25rem 0 0;
+    }
+
+    .record-count {
+        display: inline-block;
+        background: #f1f5f9;
+        color: #536277;
+        font-size: 0.78rem;
+        font-weight: 600;
+        padding: 0.4rem 0.7rem;
+        border-radius: 7px;
+        white-space: nowrap;
+    }
+
+    .appointment-table {
+        margin: 0;
+        font-size: 0.86rem;
+    }
+
+    .appointment-table thead th {
+        background: #f8fafc;
+        color: #64748b;
+        font-size: 0.73rem;
+        font-weight: 700;
+        letter-spacing: 0.35px;
+        text-transform: uppercase;
+        white-space: nowrap;
+        padding: 0.9rem 1rem;
+        border-bottom: 1px solid #e7ecf2;
+    }
+
+    .appointment-table tbody td {
+        color: #475569;
+        padding: 1rem;
+        vertical-align: middle;
+        border-bottom: 1px solid #edf0f4;
+    }
+
+    .appointment-table tbody tr:last-child td {
+        border-bottom: 0;
+    }
+
+    .appointment-table tbody tr:hover td {
+        background: #fafcff;
+    }
+
+    .student-name {
+        color: #243247;
+        font-weight: 600;
+    }
+
+    .student-number {
+        color: #64748b;
+        white-space: nowrap;
+    }
+
+    .service-name {
+        color: #334155;
+        font-weight: 500;
+    }
+
+    .appointment-date {
+        color: #334155;
+        white-space: nowrap;
+    }
+
+    .appointment-time {
+        color: #64748b;
+        white-space: nowrap;
+    }
+
+    .status-pill {
+        display: inline-block;
+        padding: 0.35rem 0.65rem;
+        border-radius: 6px;
+        font-size: 0.74rem;
+        font-weight: 600;
+        white-space: nowrap;
+    }
+
+    .status-pending {
+        color: #946200;
+        background: #fff5d9;
+    }
+
+    .status-approved {
+        color: #217346;
+        background: #e8f6ed;
+    }
+
+    .status-completed {
+        color: #315da8;
+        background: #eaf1ff;
+    }
+
+    .status-rejected {
+        color: #a63737;
+        background: #ffeded;
+    }
+
+    .status-cancelled,
+    .status-canceled,
+    .status-unknown,
+    .status-default {
+        color: #5d6878;
+        background: #eef1f5;
+    }
+
+    .dashboard-empty {
+        padding: 3rem 1rem !important;
+        text-align: center;
+        color: #7b8798 !important;
+    }
+
+    .dashboard-footer {
+        color: #8a96a7;
+        font-size: 0.78rem;
+        margin-top: 1rem;
+    }
+
+    @@media (max-width: 576px) {
+        .clinic-dashboard {
+            padding-top: 1rem;
+        }
+
+        .dashboard-header {
+            align-items: flex-start !important;
+            flex-direction: column;
+        }
+
+        .stat-card {
+            padding: 1rem;
+        }
+
+        .stat-value {
+            font-size: 1.75rem;
+        }
+
+        .panel-header {
+            padding: 1rem;
+        }
+
+        .appointment-table thead th,
+        .appointment-table tbody td {
+            padding: 0.8rem;
+        }
+    }
+</style>
+
+<div class="container clinic-dashboard">
+
+    @* Dashboard page heading and current date. *@
+    <div class="dashboard-header d-flex justify-content-between
+                align-items-center gap-3 flex-wrap mb-4">
+
+        <div>
+            <h1 class="h3 dashboard-heading mb-2">
+                Clinic Dashboard
+            </h1>
+
+            <p class="dashboard-subtitle mb-0">
+                An overview of appointment activity and clinic workload.
+            </p>
+        </div>
+
+        <div class="dashboard-date">
+            <span class="me-1" aria-hidden="true">&#128197;</span>
+            @currentDate
+        </div>
+    </div>
+
+    @* Primary operational statistics. *@
+    <div class="row row-cols-1 row-cols-sm-2 row-cols-xl-4 g-3 mb-3">
+
+        <div class="col">
+            <section class="stat-card">
+                <div class="stat-card-top">
+                    <h2 class="stat-label">Total Requests</h2>
+                    <span class="stat-icon icon-blue" aria-hidden="true">TR</span>
+                </div>
+                <p class="stat-value">@Model.TotalRequests</p>
+                <p class="stat-caption">All retrieved appointment records</p>
+            </section>
+        </div>
+
+        <div class="col">
+            <section class="stat-card">
+                <div class="stat-card-top">
+                    <h2 class="stat-label">Pending Requests</h2>
+                    <span class="stat-icon icon-amber" aria-hidden="true">P</span>
+                </div>
+                <p class="stat-value">@Model.PendingRequests</p>
+                <p class="stat-caption">Awaiting staff action</p>
+            </section>
+        </div>
+
+        <div class="col">
+            <section class="stat-card">
+                <div class="stat-card-top">
+                    <h2 class="stat-label">Scheduled</h2>
+                    <span class="stat-icon icon-green" aria-hidden="true">S</span>
+                </div>
+                <p class="stat-value">@Model.ScheduledAppointments</p>
+                <p class="stat-caption">Approved with date and time</p>
+            </section>
+        </div>
+
+        <div class="col">
+            <section class="stat-card">
+                <div class="stat-card-top">
+                    <h2 class="stat-label">Today's Appointments</h2>
+                    <span class="stat-icon icon-purple" aria-hidden="true">T</span>
+                </div>
+                <p class="stat-value">@Model.TodaysAppointments</p>
+                <p class="stat-caption">Approved visits scheduled today</p>
+            </section>
+        </div>
+
+    </div>
+
+    @* Appointment outcomes. *@
+    <div class="row row-cols-1 row-cols-sm-3 g-3 mb-4">
+
+        <div class="col">
+            <section class="stat-card">
+                <div class="stat-card-top">
+                    <h2 class="stat-label">Completed</h2>
+                    <span class="stat-icon icon-green" aria-hidden="true">C</span>
+                </div>
+                <p class="stat-value">@Model.CompletedAppointments</p>
+                <p class="stat-caption">Appointments marked as completed</p>
+            </section>
+        </div>
+
+        <div class="col">
+            <section class="stat-card">
+                <div class="stat-card-top">
+                    <h2 class="stat-label">Rejected</h2>
+                    <span class="stat-icon icon-red" aria-hidden="true">R</span>
+                </div>
+                <p class="stat-value">@Model.RejectedRequests</p>
+                <p class="stat-caption">Requests declined by clinic staff</p>
+            </section>
+        </div>
+
+        <div class="col">
+            <section class="stat-card">
+                <div class="stat-card-top">
+                    <h2 class="stat-label">Cancelled</h2>
+                    <span class="stat-icon icon-gray" aria-hidden="true">X</span>
+                </div>
+                <p class="stat-value">@Model.CancelledAppointments</p>
+                <p class="stat-caption">Appointments cancelled</p>
+            </section>
+        </div>
+
+    </div>
+
+    @* Appointment list panel. *@
+    <section class="dashboard-panel">
+
+        <div class="panel-header">
+            <div>
+                <h2 class="panel-title">Appointment Requests</h2>
+                <p class="panel-subtitle">
+                    Student details and current appointment status
+                </p>
+            </div>
+
+            <span class="record-count">
+                @Model.Appointments.Count record(s)
+            </span>
+        </div>
+
+        <div class="table-responsive">
+            <table class="table appointment-table">
+
+                <thead>
+                    <tr>
+                        <th scope="col">Student</th>
+                        <th scope="col">Student Number</th>
+                        <th scope="col">Service</th>
+                        <th scope="col">Email</th>
+                        <th scope="col">Appointment Date</th>
+                        <th scope="col">Time</th>
+                        <th scope="col">Status</th>
+                    </tr>
+                </thead>
+
+                <tbody>
+                    @if (Model.Appointments.Count == 0)
+                    {
+                        <tr>
+                            <td colspan="7" class="dashboard-empty">
+                                No appointment requests were found.
+                            </td>
+                        </tr>
+                    }
+                    else
+                    {
+                        @foreach (var appointment in Model.Appointments)
+                        {
+                            <tr>
+                                <td>
+                                    @if (appointment.Student != null)
+                                    {
+                                        <span class="student-name">
+                                            @($"{appointment.Student.FirstName} {appointment.Student.LastName}")
+                                        </span>
+                                    }
+                                    else
+                                    {
+                                        <span class="text-muted">
+                                            Student details unavailable
+                                        </span>
+                                    }
+                                </td>
+
+                                <td>
+                                    <span class="student-number">
+                                        @(appointment.Student?.StudentNumber ?? "—")
+                                    </span>
+                                </td>
+
+                                <td>
+                                    <span class="service-name">
+                                        @(string.IsNullOrWhiteSpace(appointment.ServiceName)
+                                            ? "Not specified"
+                                            : appointment.ServiceName)
+                                    </span>
+                                </td>
+
+                                <td>
+                                    @(appointment.Student?.Email ?? "—")
+                                </td>
+
+                                <td>
+                                    <span class="appointment-date">
+                                        @(appointment.AppointmentDate.HasValue
+                                            ? appointment.AppointmentDate.Value.ToString("dd MMM yyyy")
+                                            : "Not scheduled")
+                                    </span>
+                                </td>
+
+                                <td>
+                                    <span class="appointment-time">
+                                        @(appointment.AppointmentTime.HasValue
+                                            ? appointment.AppointmentTime.Value.ToString("HH:mm")
+                                            : "—")
+                                    </span>
+                                </td>
+
+                                <td>
+                                    @{
+                                        // Convert the status to a safe CSS class.
+                                        string status = string.IsNullOrWhiteSpace(appointment.Status)
+                                            ? "Unknown"
+                                            : appointment.Status.Trim();
+
+                                        string statusClass = status.ToLowerInvariant() switch
+                                        {
+                                            "pending" => "status-pending",
+                                            "approved" => "status-approved",
+                                            "completed" => "status-completed",
+                                            "rejected" => "status-rejected",
+                                            "cancelled" => "status-cancelled",
+                                            "canceled" => "status-canceled",
+                                            "unknown" => "status-unknown",
+                                            _ => "status-default"
+                                        };
+                                    }
+
+                                    <span class="status-pill @statusClass">
+                                        @status
+                                    </span>
+                                </td>
+                            </tr>
+                        }
+                    }
+                </tbody>
+
+            </table>
+        </div>
+    </section>
+
+    <p class="dashboard-footer">
+        Dashboard data is retrieved from Supabase. Refresh the page to load
+        the latest available appointment records.
+    </p>
+
+</div>

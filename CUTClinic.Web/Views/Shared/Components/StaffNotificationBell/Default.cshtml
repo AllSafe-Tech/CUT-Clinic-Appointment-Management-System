@@ -1,0 +1,22 @@
+﻿
+@model int
+
+@* Link to the staff notification page and display the unread count. *@
+<a asp-controller="StaffNotifications"
+   asp-action="Index"
+   class="nav-link position-relative"
+   aria-label="Staff notifications">
+
+    <span aria-hidden="true">&#128276;</span>
+    Notifications
+
+    @if (Model > 0)
+    {
+        @* Keep the badge compact when there are many unread alerts. *@
+        <span class="position-absolute top-0 start-100
+                     translate-middle badge rounded-pill text-bg-danger">
+            @(Model > 99 ? "99+" : Model.ToString())
+            <span class="visually-hidden">unread notifications</span>
+        </span>
+    }
+</a>

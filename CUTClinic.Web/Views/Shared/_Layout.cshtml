@@ -1,0 +1,410 @@
+﻿
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="utf-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+
+    @* Display the current page title followed by the system name. *@
+    <title>@ViewData["Title"] - CUT Clinic</title>
+
+    @* Bootstrap responsive styling and components. *@
+    <link rel="stylesheet"
+          href="~/lib/bootstrap/dist/css/bootstrap.min.css" />
+
+    @* Main application stylesheet. *@
+    <link rel="stylesheet"
+          href="~/css/site.css"
+          asp-append-version="true" />
+
+    @* Preserve the project's generated CSS styles. *@
+    <link rel="stylesheet"
+          href="~/CUTClinic.Web.styles.css"
+          asp-append-version="true" />
+
+    @* Shared styling using CUT-inspired colours. *@
+    <style>
+            :root {
+                --cut-blue: #003261;
+                --cut-blue-hover: #004780;
+                --cut-white: #ffffff;
+                --clinic-background: #f4f7fb;
+                --clinic-text: #263445;
+                --clinic-border: #e2e8f0;
+            }
+
+            html {
+                min-height: 100%;
+                position: relative;
+            }
+
+            body {
+                min-height: 100vh;
+                display: flex;
+                flex-direction: column;
+                margin: 0;
+                background-color: var(--clinic-background);
+                color: var(--clinic-text);
+                font-family: "Segoe UI", Arial, sans-serif;
+            }
+
+            /* Main university-coloured navigation header. */
+            .clinic-navbar {
+                background-color: var(--cut-blue);
+                box-shadow: 0 3px 12px rgba(0, 0, 0, 0.12);
+            }
+
+            .clinic-brand {
+                display: inline-flex;
+                align-items: center;
+                gap: 14px;
+                text-decoration: none;
+                min-width: 0;
+            }
+
+            /* Keep the official CUT logo proportions unchanged. */
+            .clinic-logo-container {
+                display: flex;
+                align-items: center;
+                justify-content: center;
+                flex-shrink: 0;
+                background-color: var(--cut-white);
+                padding: 5px 9px;
+                border-radius: 5px;
+            }
+
+            .clinic-logo {
+                display: block;
+                width: 180px;
+                max-width: 100%;
+                height: auto;
+                object-fit: contain;
+            }
+
+            .clinic-brand-text {
+                color: var(--cut-white);
+                line-height: 1.35;
+            }
+
+            .clinic-brand-title {
+                display: block;
+                font-size: 1rem;
+                font-weight: 700;
+            }
+
+            .clinic-brand-subtitle {
+                display: block;
+                font-size: 0.78rem;
+                opacity: 0.85;
+            }
+
+            /* Navigation links remain visible against CUT blue. */
+            .clinic-navbar .nav-link {
+                color: rgba(255, 255, 255, 0.88);
+                font-weight: 500;
+                padding: 0.65rem 0.75rem;
+                border-radius: 5px;
+                transition: background-color 0.2s ease;
+            }
+
+                .clinic-navbar .nav-link:hover,
+                .clinic-navbar .nav-link:focus,
+                .clinic-navbar .nav-link.active {
+                    color: var(--cut-white);
+                    background-color: var(--cut-blue-hover);
+                }
+
+                /* Make the currently selected navigation item stand out. */
+                .clinic-navbar .nav-link.active {
+                    font-weight: 700;
+                }
+
+            .clinic-navbar .navbar-toggler {
+                border-color: rgba(255, 255, 255, 0.55);
+            }
+
+            .clinic-navbar .navbar-toggler-icon {
+                filter: brightness(0) invert(1);
+            }
+
+            /* Style the logout button for the dark header. */
+            .clinic-logout-button {
+                color: var(--cut-white);
+                border-color: rgba(255, 255, 255, 0.8);
+                font-weight: 600;
+                white-space: nowrap;
+                transition: background-color 0.2s ease, color 0.2s ease;
+            }
+
+                .clinic-logout-button:hover,
+                .clinic-logout-button:focus {
+                    color: var(--cut-blue);
+                    background-color: var(--cut-white);
+                    border-color: var(--cut-white);
+                }
+
+            /* Main content fills the space between header and footer. */
+            .clinic-main {
+                flex: 1 0 auto;
+                width: 100%;
+            }
+
+            /* Consistent footer across application pages. */
+            .clinic-footer {
+                flex-shrink: 0;
+                background-color: var(--cut-white);
+                border-top: 1px solid var(--clinic-border);
+                color: #64748b;
+                padding: 18px 0;
+                font-size: 0.875rem;
+            }
+
+                .clinic-footer strong {
+                    color: var(--cut-blue);
+                }
+
+            /* Adapt navigation for smaller screens. */
+            @@media (max-width: 991.98px) {
+                .clinic-navbar .navbar-collapse {
+                    padding-top: 0.75rem;
+                    padding-bottom: 0.75rem;
+                }
+
+                .clinic-navbar .nav-link {
+                    margin-top: 3px;
+                }
+
+                .clinic-logout-form {
+                    margin-top: 8px;
+                    margin-bottom: 8px;
+                }
+            }
+
+            @@media (max-width: 767.98px) {
+                .clinic-logo {
+                    width: 135px;
+                }
+
+                .clinic-brand {
+                    gap: 9px;
+                }
+
+                .clinic-brand-title {
+                    font-size: 0.88rem;
+                }
+
+                .clinic-brand-subtitle {
+                    font-size: 0.7rem;
+                }
+            }
+
+            /* Respect users who prefer reduced motion. */
+            @@media (prefers-reduced-motion: reduce) {
+                *,
+                *::before,
+                *::after {
+                    scroll-behavior: auto !important;
+                    transition: none !important;
+                }
+            }
+    </style>
+</head>
+
+<body>
+
+    @* =========================================================
+       TOP NAVIGATION
+       ========================================================= *@
+
+    <header>
+        <nav class="navbar navbar-expand-lg navbar-dark clinic-navbar">
+            <div class="container-fluid px-3 px-lg-4">
+
+                @* Official CUT logo and system identity. *@
+                <a class="clinic-brand"
+                   asp-controller="Home"
+                   asp-action="Index"
+                   aria-label="CUT Clinic Dashboard">
+
+                    <span class="clinic-logo-container">
+                        <img src="~/images/cut-logo.png"
+                             alt="Central University of Technology, Free State"
+                             class="clinic-logo" />
+                    </span>
+
+                    <span class="clinic-brand-text">
+                        <span class="clinic-brand-title">
+                            CUT Clinic
+                        </span>
+
+                        <span class="clinic-brand-subtitle">
+                            Appointment Management System
+                        </span>
+                    </span>
+                </a>
+
+                @* Mobile navigation toggle. *@
+                <button class="navbar-toggler"
+                        type="button"
+                        data-bs-toggle="collapse"
+                        data-bs-target="#clinicNavigation"
+                        aria-controls="clinicNavigation"
+                        aria-expanded="false"
+                        aria-label="Toggle navigation">
+
+                    <span class="navbar-toggler-icon"></span>
+                </button>
+
+                @* Navigation links for authenticated staff or guests. *@
+                <div class="collapse navbar-collapse"
+                     id="clinicNavigation">
+
+                    <ul class="navbar-nav ms-auto align-items-lg-center">
+
+                        @if (User.Identity?.IsAuthenticated == true &&
+                             User.IsInRole("Staff"))
+                        {
+                            @* Dashboard: existing overview page. *@
+                            <li class="nav-item">
+                                <a class="nav-link @(ViewContext.RouteData.Values["controller"]?.ToString() == "Home" && ViewContext.RouteData.Values["action"]?.ToString() == "Index" ? "active" : "")"
+                                   asp-controller="Home"
+                                   asp-action="Index">
+                                    <span class="me-1" aria-hidden="true">&#9632;</span>
+                                    Dashboard
+                                </a>
+                            </li>
+
+                            @*
+                                Appointment Requests:
+                                Uses AppointmentRequestController.
+                                The controller must have an Index action.
+                            *@
+                            
+                            <!-- Appointment Requests: matches AppointmentRequestsController -->
+                            <li class="nav-item">
+                                <a class="nav-link @(ViewContext.RouteData.Values["controller"]?.ToString() == "AppointmentRequests" ? "active" : "")"
+                                   asp-controller="AppointmentRequests"
+                                   asp-action="Index">
+                                    <span class="me-1" aria-hidden="true">&#128197;</span>
+                                    Appointment Requests
+                                </a>
+                            </li>
+
+
+                            @*
+                                CUT Admin opens the profile page.
+                                The profile displays the current account's
+                                actual role, which may be Clinic Staff.
+                            *@
+                           
+
+                            @* Existing notification bell and unread count. *@
+                            <li class="nav-item">
+                                @await Component.InvokeAsync(
+                                    "StaffNotificationBell")
+                            </li>
+
+                            @* Display the signed-in staff member's name. *@
+                            <li class="nav-item">
+                                <a class="nav-link @(ViewContext.RouteData.Values["controller"]?.ToString() == "Home" && ViewContext.RouteData.Values["action"]?.ToString() == "Profile" ? "active" : "")"
+                                   asp-controller="Home"
+                                   asp-action="Profile"
+                                   aria-label="Open CUT Admin profile">
+                                    <span class="me-1" aria-hidden="true">&#128100;</span>
+                                    CUT Admin
+                                </a>
+                            </li>
+
+                            @*
+                                Existing protected POST logout action.
+                                The anti-forgery token protects this request.
+                            *@
+                            <li class="nav-item ms-lg-2">
+                                <form asp-controller="Account"
+                                      asp-action="Logout"
+                                      method="post"
+                                      class="clinic-logout-form d-inline">
+
+                                    @Html.AntiForgeryToken()
+
+                                    <button type="submit"
+                                            class="btn btn-outline-light btn-sm clinic-logout-button"
+                                            aria-label="Log out of the CUT Clinic staff system">
+
+                                        <span class="me-1"
+                                              aria-hidden="true">
+                                            &#10162;
+                                        </span>
+
+                                        Log Out
+                                    </button>
+                                </form>
+                            </li>
+                        }
+                        else
+                        {
+                            @* Guests can access the existing staff login page. *@
+                            <li class="nav-item">
+                                <a class="nav-link"
+                                   asp-controller="Account"
+                                   asp-action="Login">
+                                    Staff Login
+                                </a>
+                            </li>
+                        }
+
+                    </ul>
+                </div>
+            </div>
+        </nav>
+    </header>
+
+    @* =========================================================
+       MAIN PAGE CONTENT
+       ========================================================= *@
+
+    <main class="clinic-main">
+        @RenderBody()
+    </main>
+
+    @* =========================================================
+       FOOTER
+       ========================================================= *@
+
+    <footer class="clinic-footer">
+        <div class="container-fluid px-3 px-lg-4">
+
+            <div class="d-flex flex-column flex-md-row
+                justify-content-between align-items-md-center gap-2">
+
+                <div>
+                    <strong>CUT Clinic</strong>
+                    <span class="mx-1">|</span>
+                    Appointment Management System
+                </div>
+
+                <div>
+                    Central University of Technology, Free State
+                </div>
+
+            </div>
+
+            <div class="mt-2 small">
+                For authorised clinic staff. Handle student information
+                confidentially.
+            </div>
+
+        </div>
+    </footer>
+
+    @* Bootstrap JavaScript supports the responsive navigation menu. *@
+    <script src="~/lib/bootstrap/dist/js/bootstrap.bundle.min.js"></script>
+
+    @* Preserve the existing application JavaScript file. *@
+    <script src="~/js/site.js" asp-append-version="true"></script>
+
+    @* Allow individual views to load their own scripts. *@
+    @await RenderSectionAsync("Scripts", required: false)
+
+</body>
+</html>

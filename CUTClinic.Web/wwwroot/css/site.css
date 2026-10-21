@@ -1,0 +1,387 @@
+
+/* =========================================================
+   CUT CLINIC APPOINTMENT MANAGEMENT SYSTEM
+   Shared application styles
+   ========================================================= */
+
+/* 1. CUT-inspired brand colours and shared design variables */
+:root {
+    --cut-blue: #003261;
+    --cut-blue-hover: #004780;
+    --cut-white: #ffffff;
+    --clinic-background: #f4f7fb;
+    --clinic-surface: #ffffff;
+    --clinic-text: #263445;
+    --clinic-muted: #64748b;
+    --clinic-border: #e2e8f0;
+    --clinic-success: #166534;
+    --clinic-success-bg: #dcfce7;
+    --clinic-warning: #92400e;
+    --clinic-warning-bg: #fef3c7;
+    --clinic-danger: #991b1b;
+    --clinic-danger-bg: #fee2e2;
+    --clinic-radius: 12px;
+    --clinic-shadow: 0 3px 12px rgba(15, 23, 42, 0.06);
+}
+
+/* 2. Global page styling */
+html {
+    min-height: 100%;
+    position: relative;
+}
+
+body {
+    min-height: 100vh;
+    display: flex;
+    flex-direction: column;
+    margin: 0;
+    background-color: var(--clinic-background);
+    color: var(--clinic-text);
+    font-family: "Segoe UI", Arial, sans-serif;
+    line-height: 1.5;
+}
+
+h1,
+h2,
+h3,
+h4,
+h5,
+h6 {
+    color: var(--clinic-blue, #003261);
+    font-weight: 650;
+}
+
+a {
+    color: var(--cut-blue);
+}
+
+    a:hover {
+        color: var(--cut-blue-hover);
+    }
+
+/* 3. CUT-blue navigation header */
+.clinic-navbar {
+    background-color: var(--cut-blue);
+    box-shadow: 0 3px 12px rgba(0, 0, 0, 0.12);
+}
+
+.clinic-brand {
+    display: inline-flex;
+    align-items: center;
+    gap: 14px;
+    min-width: 0;
+    text-decoration: none;
+}
+
+.clinic-logo-container {
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    flex-shrink: 0;
+    padding: 5px 9px;
+    background-color: var(--cut-white);
+    border-radius: 5px;
+}
+
+.clinic-logo {
+    display: block;
+    width: 180px;
+    max-width: 100%;
+    height: auto;
+    object-fit: contain;
+}
+
+.clinic-brand-text {
+    color: var(--cut-white);
+    line-height: 1.35;
+}
+
+.clinic-brand-title {
+    display: block;
+    color: var(--cut-white);
+    font-size: 1rem;
+    font-weight: 700;
+}
+
+.clinic-brand-subtitle {
+    display: block;
+    color: var(--cut-white);
+    font-size: 0.78rem;
+    opacity: 0.85;
+}
+
+.clinic-navbar .nav-link {
+    padding: 0.65rem 0.9rem;
+    border-radius: 5px;
+    color: rgba(255, 255, 255, 0.9);
+    font-weight: 500;
+    transition: background-color 0.2s ease;
+}
+
+    .clinic-navbar .nav-link:hover,
+    .clinic-navbar .nav-link:focus {
+        background-color: var(--cut-blue-hover);
+        color: var(--cut-white);
+    }
+
+.clinic-navbar .navbar-toggler {
+    border-color: rgba(255, 255, 255, 0.55);
+}
+
+.clinic-navbar .navbar-toggler-icon {
+    filter: brightness(0) invert(1);
+}
+
+/* 4. Main content and footer */
+.clinic-main {
+    flex: 1 0 auto;
+    width: 100%;
+}
+
+.clinic-footer {
+    flex-shrink: 0;
+    padding: 18px 0;
+    border-top: 1px solid var(--clinic-border);
+    background-color: var(--cut-white);
+    color: var(--clinic-muted);
+    font-size: 0.875rem;
+}
+
+    .clinic-footer strong {
+        color: var(--cut-blue);
+    }
+
+/* 5. Reusable page heading */
+.page-heading {
+    margin-bottom: 1.5rem;
+}
+
+    .page-heading h1 {
+        margin-bottom: 0.5rem;
+        color: var(--cut-blue);
+        font-size: clamp(1.6rem, 3vw, 2rem);
+        font-weight: 700;
+    }
+
+    .page-heading p {
+        margin-bottom: 0;
+        color: var(--clinic-muted);
+    }
+
+/* 6. Dashboard cards */
+.dashboard-card {
+    height: 100%;
+    border: 1px solid var(--clinic-border);
+    border-radius: var(--clinic-radius);
+    background-color: var(--clinic-surface);
+    box-shadow: var(--clinic-shadow);
+    transition: transform 0.2s ease, box-shadow 0.2s ease;
+}
+
+    .dashboard-card:hover {
+        transform: translateY(-2px);
+        box-shadow: 0 7px 18px rgba(15, 23, 42, 0.09);
+    }
+
+    .dashboard-card .card-body {
+        padding: 1.35rem;
+    }
+
+.dashboard-card-label {
+    margin-bottom: 0.75rem;
+    color: var(--clinic-muted);
+    font-size: 0.9rem;
+    font-weight: 600;
+}
+
+.dashboard-card-value {
+    margin: 0;
+    color: var(--cut-blue);
+    font-size: clamp(1.8rem, 4vw, 2.35rem);
+    font-weight: 750;
+    line-height: 1.2;
+}
+
+/* 7. Shared panels and appointment table */
+.clinic-panel {
+    overflow: hidden;
+    border: 1px solid var(--clinic-border);
+    border-radius: var(--clinic-radius);
+    background-color: var(--clinic-surface);
+    box-shadow: var(--clinic-shadow);
+}
+
+.clinic-panel-header {
+    padding: 1rem 1.25rem;
+    border-bottom: 1px solid var(--clinic-border);
+    background-color: var(--clinic-surface);
+}
+
+    .clinic-panel-header h2 {
+        margin: 0;
+        color: var(--cut-blue);
+        font-size: 1.1rem;
+        font-weight: 700;
+    }
+
+.clinic-table {
+    margin-bottom: 0;
+    vertical-align: middle;
+}
+
+    .clinic-table thead th {
+        padding: 0.95rem 1rem;
+        border-bottom: 1px solid var(--clinic-border);
+        background-color: #f8fafc;
+        color: #475569;
+        font-size: 0.78rem;
+        font-weight: 700;
+        letter-spacing: 0.035em;
+        text-transform: uppercase;
+        white-space: nowrap;
+    }
+
+    .clinic-table tbody td {
+        padding: 1rem;
+        border-color: var(--clinic-border);
+    }
+
+    .clinic-table tbody tr:last-child td {
+        border-bottom: 0;
+    }
+
+/* 8. Consistent primary and secondary buttons */
+.btn-cut-primary {
+    border: 1px solid var(--cut-blue);
+    background-color: var(--cut-blue);
+    color: var(--cut-white);
+    font-weight: 600;
+}
+
+    .btn-cut-primary:hover,
+    .btn-cut-primary:focus {
+        border-color: var(--cut-blue-hover);
+        background-color: var(--cut-blue-hover);
+        color: var(--cut-white);
+    }
+
+.btn-cut-outline {
+    border: 1px solid var(--cut-blue);
+    background-color: transparent;
+    color: var(--cut-blue);
+    font-weight: 600;
+}
+
+    .btn-cut-outline:hover,
+    .btn-cut-outline:focus {
+        background-color: var(--cut-blue);
+        color: var(--cut-white);
+    }
+
+/* 9. Appointment status badges */
+.status-badge {
+    display: inline-flex;
+    align-items: center;
+    padding: 0.35rem 0.65rem;
+    border-radius: 999px;
+    font-size: 0.78rem;
+    font-weight: 650;
+    line-height: 1.2;
+    white-space: nowrap;
+}
+
+.status-pending {
+    background-color: var(--clinic-warning-bg);
+    color: var(--clinic-warning);
+}
+
+.status-approved,
+.status-scheduled,
+.status-completed {
+    background-color: var(--clinic-success-bg);
+    color: var(--clinic-success);
+}
+
+.status-rejected,
+.status-cancelled {
+    background-color: var(--clinic-danger-bg);
+    color: var(--clinic-danger);
+}
+
+.status-default {
+    background-color: #e2e8f0;
+    color: #334155;
+}
+
+/* 10. Form controls */
+.form-label {
+    color: var(--clinic-text);
+    font-weight: 600;
+}
+
+.form-control,
+.form-select {
+    min-height: 42px;
+    border-color: #cbd5e1;
+    border-radius: 7px;
+}
+
+    .form-control:focus,
+    .form-select:focus {
+        border-color: var(--cut-blue);
+        box-shadow: 0 0 0 0.2rem rgba(0, 50, 97, 0.13);
+    }
+
+/* 11. Accessible keyboard focus */
+a:focus-visible,
+button:focus-visible,
+input:focus-visible,
+select:focus-visible,
+textarea:focus-visible {
+    outline: 3px solid #80bfff;
+    outline-offset: 2px;
+}
+
+/* 12. Mobile and tablet adjustments */
+@media (max-width: 767.98px) {
+    .clinic-logo {
+        width: 135px;
+    }
+
+    .clinic-brand {
+        gap: 9px;
+    }
+
+    .clinic-brand-title {
+        font-size: 0.88rem;
+    }
+
+    .clinic-brand-subtitle {
+        font-size: 0.7rem;
+    }
+
+    .clinic-navbar .nav-link {
+        margin-top: 3px;
+    }
+
+    .dashboard-card .card-body {
+        padding: 1rem;
+    }
+
+    .clinic-table thead th,
+    .clinic-table tbody td {
+        padding: 0.8rem;
+    }
+}
+
+/* 13. Respect reduced-motion preferences */
+@media (prefers-reduced-motion: reduce) {
+    *,
+    *::before,
+    *::after {
+        scroll-behavior: auto !important;
+        animation-duration: 0.01ms !important;
+        animation-iteration-count: 1 !important;
+        transition: none !important;
+    }
+}
