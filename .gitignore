@@ -1,0 +1,17 @@
+# Secrets - NEVER commit (SRS NFR5 / R05)
+env.json
+.env
+
+# Flutter / Dart
+.dart_tool/
+.packages
+build/
+.flutter-plugins
+.flutter-plugins-dependencies
+pubspec.lock
+*.iml
+.idea/
+.vscode/
+local.properties
+*.keystore
+*.jks
