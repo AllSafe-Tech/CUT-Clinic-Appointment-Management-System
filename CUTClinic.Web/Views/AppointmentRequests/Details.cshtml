@@ -1,0 +1,472 @@
+﻿
+@* Displays student information, the selected appointment and appointment history. *@
+@model CUTClinic.Web.Models.StudentAppointmentDetailsViewModel
+
+@using System
+@using System.Collections.Generic
+
+@{
+    ViewData["Title"] = "Student Details";
+
+    // The appointment currently selected by clinic staff.
+    var appointment = Model.Appointment;
+
+    // Safely handle unavailable student information.
+    string studentName = appointment.Student == null
+        ? "Student details unavailable"
+        : $"{appointment.Student.FirstName} {appointment.Student.LastName}";
+
+    string studentNumber = appointment.Student?.StudentNumber ?? "Not available";
+    string studentEmail = appointment.Student?.Email ?? "Not available";
+    string studentPhone = appointment.Student?.Phone ?? "Not available";
+    string status = appointment.Status ?? "pending";
+
+    // Only pending appointments can be scheduled or rejected.
+    bool isPending = string.Equals(
+        status, "pending", StringComparison.OrdinalIgnoreCase);
+
+    // Approved appointments can be rescheduled.
+    bool isApproved = string.Equals(
+        status, "approved", StringComparison.OrdinalIgnoreCase);
+
+    // Use South African time (UTC+2) to determine the minimum date.
+    DateTime southAfricanNow = DateTimeOffset.UtcNow
+        .ToOffset(TimeSpan.FromHours(2))
+        .DateTime;
+
+    string minimumAppointmentDate = southAfricanNow.ToString("yyyy-MM-dd");
+
+    // Prefill the existing schedule for rescheduling.
+    string currentAppointmentDate =
+        appointment.AppointmentDate?.ToString("yyyy-MM-dd") ?? "";
+
+    string currentAppointmentTime =
+        appointment.AppointmentTime?.ToString("HH:mm") ?? "";
+
+    // Format the selected appointment's submission timestamp.
+    string submittedDateTime = appointment.CreatedAt
+        .ToOffset(TimeSpan.FromHours(2))
+        .ToString("dd MMMM yyyy, HH:mm");
+
+    // Safely prepare the student's appointment history.
+    var appointmentHistory = Model.AppointmentHistory
+        ?? new List<CUTClinic.Web.Models.AppointmentDashboardItem>();
+}
+
+<div class="container py-4">
+
+    @* Page heading and navigation. *@
+    <div class="d-flex flex-wrap justify-content-between align-items-center gap-3 mb-4">
+        <div>
+            <h1 class="h3 fw-bold mb-1">Student Details</h1>
+            <p class="text-secondary mb-0">
+                Review student information and appointment history.
+            </p>
+        </div>
+
+        <a asp-controller="AppointmentRequests"
+           asp-action="Index"
+           class="btn btn-outline-primary">
+            Back to Requests
+        </a>
+    </div>
+
+    @* Display feedback after appointment actions. *@
+    @if (TempData["Success"] is string successMessage)
+    {
+        <div class="alert alert-success" role="status">
+            @successMessage
+        </div>
+    }
+
+    @if (TempData["SuccessMessage"] is string successMessageAlt)
+    {
+        <div class="alert alert-success" role="status">
+            @successMessageAlt
+        </div>
+    }
+
+    @if (TempData["Error"] is string errorMessage)
+    {
+        <div class="alert alert-danger" role="alert">
+            @errorMessage
+        </div>
+    }
+
+    @if (TempData["ErrorMessage"] is string errorMessageAlt)
+    {
+        <div class="alert alert-danger" role="alert">
+            @errorMessageAlt
+        </div>
+    }
+
+    @if (TempData["Warning"] is string warningMessage)
+    {
+        <div class="alert alert-warning" role="status">
+            @warningMessage
+        </div>
+    }
+
+    @* Student profile. *@
+    <div class="card border-0 shadow-sm mb-4">
+        <div class="card-header bg-white py-3">
+            <h2 class="h5 fw-bold mb-0">Student Information</h2>
+        </div>
+
+        <div class="card-body">
+            <div class="row g-4">
+                <div class="col-md-6">
+                    <div class="text-secondary small">Full Name</div>
+                    <div class="fw-semibold">@studentName</div>
+                </div>
+
+                <div class="col-md-6">
+                    <div class="text-secondary small">Student Number</div>
+                    <div class="fw-semibold">@studentNumber</div>
+                </div>
+
+                <div class="col-md-6">
+                    <div class="text-secondary small">Email Address</div>
+                    <div class="fw-semibold text-break">@studentEmail</div>
+                </div>
+
+                <div class="col-md-6">
+                    <div class="text-secondary small">Phone Number</div>
+                    <div class="fw-semibold">@studentPhone</div>
+                </div>
+            </div>
+        </div>
+    </div>
+
+    @* Selected appointment details. *@
+    <div class="card border-0 shadow-sm mb-4">
+        <div class="card-header bg-white py-3">
+            <h2 class="h5 fw-bold mb-0">Selected Appointment</h2>
+        </div>
+
+        <div class="card-body">
+            <div class="row g-4">
+                <div class="col-md-6">
+                    <div class="text-secondary small">Appointment Reference</div>
+                    <div class="fw-semibold text-break">
+                        @appointment.AppointmentId
+                    </div>
+                </div>
+
+                <div class="col-md-6">
+                    <div class="text-secondary small">Requested Service</div>
+                    <div class="fw-semibold">
+                        @(string.IsNullOrWhiteSpace(appointment.ServiceName)
+                            ? "Not specified"
+                            : appointment.ServiceName)
+                    </div>
+                </div>
+
+                <div class="col-md-6">
+                    <div class="text-secondary small">Date Submitted</div>
+                    <div class="fw-semibold">@submittedDateTime</div>
+                </div>
+
+                <div class="col-md-6">
+                    <div class="text-secondary small">Current Status</div>
+                    <span class="badge text-bg-secondary">@status</span>
+                </div>
+
+                <div class="col-md-6">
+                    <div class="text-secondary small">Appointment Date</div>
+                    <div class="fw-semibold">
+                        @(appointment.AppointmentDate.HasValue
+                            ? appointment.AppointmentDate.Value.ToString("dd MMMM yyyy")
+                            : "Not scheduled yet")
+                    </div>
+                </div>
+
+                <div class="col-md-6">
+                    <div class="text-secondary small">Appointment Time</div>
+                    <div class="fw-semibold">
+                        @(appointment.AppointmentTime.HasValue
+                            ? appointment.AppointmentTime.Value.ToString("HH:mm")
+                            : "Not assigned yet")
+                    </div>
+                </div>
+
+                <div class="col-12">
+                    <div class="text-secondary small">Additional Notes</div>
+                    <p class="mb-0 text-break">
+                        @(string.IsNullOrWhiteSpace(appointment.Notes)
+                            ? "No additional notes provided."
+                            : appointment.Notes)
+                    </p>
+                </div>
+            </div>
+        </div>
+    </div>
+
+    @* Pending requests can be scheduled or rejected. *@
+    @if (isPending)
+    {
+        <div class="card border-0 shadow-sm mb-4">
+            <div class="card-header bg-white py-3">
+                <h2 class="h5 fw-bold mb-0">Review Appointment Request</h2>
+            </div>
+
+            <div class="card-body">
+                <p class="text-secondary">
+                    Choose the appointment date and time before approving.
+                    The student does not choose their own appointment slot.
+                </p>
+
+                <form asp-controller="AppointmentRequests"
+                      asp-action="Schedule"
+                      method="post">
+
+                    @Html.AntiForgeryToken()
+
+                    <input type="hidden"
+                           name="id"
+                           value="@appointment.AppointmentId" />
+
+                    <div class="row g-3">
+                        <div class="col-md-6">
+                            <label for="appointmentDate" class="form-label fw-semibold">
+                                Appointment Date
+                            </label>
+
+                            <input type="date"
+                                   id="appointmentDate"
+                                   name="appointmentDate"
+                                   class="form-control"
+                                   min="@minimumAppointmentDate"
+                                   required />
+                        </div>
+
+                        <div class="col-md-6">
+                            <label for="appointmentTime" class="form-label fw-semibold">
+                                Appointment Time
+                            </label>
+
+                            <input type="time"
+                                   id="appointmentTime"
+                                   name="appointmentTime"
+                                   class="form-control"
+                                   required />
+                        </div>
+                    </div>
+
+                    <div class="mt-4">
+                        <button type="submit" class="btn btn-primary">
+                            Approve and Schedule
+                        </button>
+                    </div>
+                </form>
+
+                <hr class="my-4" />
+
+                <form asp-controller="AppointmentRequests"
+                      asp-action="Reject"
+                      method="post"
+                      onsubmit="return confirm('Are you sure you want to reject this appointment request?');">
+
+                    @Html.AntiForgeryToken()
+
+                    <input type="hidden"
+                           name="id"
+                           value="@appointment.AppointmentId" />
+
+                    <button type="submit" class="btn btn-outline-danger">
+                        Reject Request
+                    </button>
+                </form>
+            </div>
+        </div>
+    }
+    else if (isApproved)
+    {
+        @* Approved appointments can be rescheduled. *@
+        <div class="card border-0 shadow-sm mb-4">
+            <div class="card-header bg-white py-3">
+                <h2 class="h5 fw-bold mb-0">Reschedule Appointment</h2>
+            </div>
+
+            <div class="card-body">
+                <div class="alert alert-info" role="status">
+                    This appointment is approved. If the doctor is unavailable,
+                    select a replacement date and/or time below. The appointment
+                    will remain approved, and the student will be notified by
+                    email after a successful update.
+                </div>
+
+                <form asp-controller="AppointmentRequests"
+                      asp-action="Reschedule"
+                      method="post">
+
+                    @Html.AntiForgeryToken()
+
+                    <input type="hidden"
+                           name="id"
+                           value="@appointment.AppointmentId" />
+
+                    <div class="row g-3">
+                        <div class="col-md-6">
+                            <label for="rescheduleAppointmentDate"
+                                   class="form-label fw-semibold">
+                                New Appointment Date
+                            </label>
+
+                            <input type="date"
+                                   id="rescheduleAppointmentDate"
+                                   name="appointmentDate"
+                                   class="form-control"
+                                   value="@currentAppointmentDate"
+                                   min="@minimumAppointmentDate"
+                                   required />
+
+                            <div class="form-text">
+                                The current date is prefilled. Change it if needed.
+                            </div>
+                        </div>
+
+                        <div class="col-md-6">
+                            <label for="rescheduleAppointmentTime"
+                                   class="form-label fw-semibold">
+                                New Appointment Time
+                            </label>
+
+                            <input type="time"
+                                   id="rescheduleAppointmentTime"
+                                   name="appointmentTime"
+                                   class="form-control"
+                                   value="@currentAppointmentTime"
+                                   required />
+
+                            <div class="form-text">
+                                The current time is prefilled. Change it if needed.
+                            </div>
+                        </div>
+                    </div>
+
+                    <div class="mt-4">
+                        <button type="submit"
+                                class="btn btn-primary"
+                                onclick="return confirm('Save the new appointment date and time? The student will be notified by email.');">
+                            Save Rescheduled Appointment
+                        </button>
+                    </div>
+                </form>
+            </div>
+        </div>
+    }
+    else
+    {
+        @* Historical appointments remain available for review. *@
+        <div class="alert alert-light border" role="status">
+            This appointment is no longer pending or approved. Its record remains
+            available for historical review.
+        </div>
+    }
+
+    @* Show the student's complete appointment history. *@
+    <div class="card border-0 shadow-sm mb-4">
+        <div class="card-header bg-white py-3">
+            <h2 class="h5 fw-bold mb-0">Appointment History</h2>
+            <p class="text-secondary small mb-0 mt-1">
+                Previous and current appointments for this student.
+            </p>
+        </div>
+
+        <div class="card-body">
+            @if (appointmentHistory.Count == 0)
+            {
+                <p class="text-secondary mb-0">
+                    No appointment history is available.
+                </p>
+            }
+            else
+            {
+                <div class="table-responsive">
+                    <table class="table table-hover align-middle">
+                        <thead>
+                            <tr>
+                                <th>Submitted</th>
+                                <th>Service</th>
+                                <th>Appointment Date</th>
+                                <th>Time</th>
+                                <th>Status</th>
+                                <th>Notes</th>
+                                <th>Action</th>
+                            </tr>
+                        </thead>
+
+                        <tbody>
+                            @foreach (var item in appointmentHistory)
+                            {
+                                @* Format the timestamp before rendering the row. *@
+                                string historySubmittedDateTime = item.CreatedAt
+                                    .ToOffset(TimeSpan.FromHours(2))
+                                    .ToString("dd MMM yyyy, HH:mm");
+
+                                <tr>
+                                    <td>@historySubmittedDateTime</td>
+
+                                    <td>
+                                        @(string.IsNullOrWhiteSpace(item.ServiceName)
+                                            ? "Not specified"
+                                            : item.ServiceName)
+                                    </td>
+
+                                    <td>
+                                        @(item.AppointmentDate.HasValue
+                                            ? item.AppointmentDate.Value.ToString("dd MMM yyyy")
+                                            : "Not scheduled")
+                                    </td>
+
+                                    <td>
+                                        @(item.AppointmentTime.HasValue
+                                            ? item.AppointmentTime.Value.ToString("HH:mm")
+                                            : "—")
+                                    </td>
+
+                                    <td>
+                                        <span class="badge text-bg-secondary">
+                                            @item.Status
+                                        </span>
+                                    </td>
+
+                                    <td>
+                                        @(string.IsNullOrWhiteSpace(item.Notes)
+                                            ? "—"
+                                            : item.Notes)
+                                    </td>
+
+                                    <td>
+                                        @if (item.AppointmentId == appointment.AppointmentId)
+                                        {
+                                            <span class="text-secondary small">
+                                                Currently viewing
+                                            </span>
+                                        }
+                                        else
+                                        {
+                                            <a asp-controller="AppointmentRequests"
+                                               asp-action="Details"
+                                               asp-route-id="@item.AppointmentId"
+                                               class="btn btn-sm btn-outline-primary">
+                                                View
+                                            </a>
+                                        }
+                                    </td>
+                                </tr>
+                            }
+                        </tbody>
+                    </table>
+                </div>
+            }
+        </div>
+    </div>
+
+    <a asp-controller="AppointmentRequests"
+       asp-action="Index"
+       class="btn btn-outline-primary">
+        Return to Appointment Requests
+    </a>
+</div>

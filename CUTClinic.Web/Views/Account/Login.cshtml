@@ -1,0 +1,260 @@
+﻿
+@model CUTClinic.Web.Models.StaffLoginViewModel
+
+@{
+    // Set the page title displayed by the shared layout and browser.
+    ViewData["Title"] = "Staff Login";
+}
+
+<style>
+    /* Give the login page a clean, professional university-clinic appearance. */
+    .cut-login-page {
+        min-height: 78vh;
+        display: flex;
+        align-items: center;
+        justify-content: center;
+        padding: 2.5rem 1rem;
+        background: #f3f6fa;
+    }
+
+    .cut-login-card {
+        width: 100%;
+        max-width: 960px;
+        overflow: hidden;
+        border: 0;
+        border-radius: 20px;
+        background: #ffffff;
+        box-shadow: 0 18px 55px rgba(15, 35, 65, 0.12);
+    }
+
+    .cut-login-brand {
+        min-height: 100%;
+        display: flex;
+        flex-direction: column;
+        justify-content: center;
+        padding: 3rem;
+        color: #ffffff;
+        background: linear-gradient(145deg, #102b50, #174b70);
+    }
+
+    .cut-login-logo {
+        display: block;
+        width: 190px;
+        max-width: 100%;
+        height: auto;
+        object-fit: contain;
+        padding: 0.75rem;
+        margin-bottom: 2rem;
+        border-radius: 10px;
+        background: #ffffff;
+    }
+
+    .cut-login-accent {
+        width: 55px;
+        height: 4px;
+        margin: 1.25rem 0;
+        border-radius: 5px;
+        background: #29b6a4;
+    }
+
+    .cut-login-form {
+        padding: 3rem;
+    }
+
+    .cut-login-form .form-control {
+        min-height: 48px;
+        border-radius: 9px;
+        border-color: #d6deea;
+    }
+
+    .cut-login-form .form-control:focus {
+        border-color: #247f9c;
+        box-shadow: 0 0 0 0.2rem rgba(36, 127, 156, 0.15);
+    }
+
+    .cut-login-button {
+        min-height: 49px;
+        border: 0;
+        border-radius: 9px;
+        background: #174b70;
+        font-weight: 600;
+    }
+
+    .cut-login-button:hover {
+        background: #103755;
+    }
+
+    .cut-login-footer {
+        color: #68778a;
+        font-size: 0.85rem;
+    }
+
+    /* Keep the form comfortable to use on smaller screens. */
+    @@media (max-width: 767.98px) {
+        .cut-login-page {
+            padding: 1rem 0.5rem;
+        }
+
+        .cut-login-brand {
+            min-height: auto;
+            padding: 2rem;
+        }
+
+        .cut-login-logo {
+            width: 150px;
+            margin-bottom: 1rem;
+        }
+
+        .cut-login-form {
+            padding: 2rem 1.5rem;
+        }
+    }
+</style>
+
+<div class="cut-login-page">
+    <div class="cut-login-card">
+        <div class="row g-0">
+
+            <!-- Branding panel: display the official CUT logo and system identity. -->
+            <div class="col-md-5">
+                <section class="cut-login-brand">
+                    <img src="~/images/cut-logo.png"
+                         asp-append-version="true"
+                         alt="Central University of Technology logo"
+                         class="cut-login-logo" />
+
+                    <p class="text-uppercase small fw-semibold mb-2">
+                        Campus Healthcare
+                    </p>
+
+                    <h1 class="h3 fw-bold">
+                        CUT Clinic
+                    </h1>
+
+                    <div class="cut-login-accent"></div>
+
+                    <p class="mb-0">
+                        Appointment Management System
+                    </p>
+
+                    <p class="mt-4 mb-0 text-white-50 small">
+                        A central place for clinic staff to manage
+                        student appointment requests.
+                    </p>
+                </section>
+            </div>
+
+            <!-- Login panel: preserve the existing Account/Login endpoint and model. -->
+            <div class="col-md-7">
+                <section class="cut-login-form">
+                    <p class="text-uppercase small fw-semibold text-secondary mb-2">
+                        Staff Portal
+                    </p>
+
+                    <h2 class="h3 fw-bold mb-2">
+                        Welcome back
+                    </h2>
+
+                    <p class="text-secondary mb-4">
+                        Sign in with your authorised clinic staff account.
+                    </p>
+
+                    <form asp-controller="Account"
+                          asp-action="Login"
+                          method="post">
+
+                        <!-- Display server-side login errors and model validation errors. -->
+                        <div asp-validation-summary="ModelOnly"
+                             class="alert alert-danger mb-3"
+                             role="alert">
+                        </div>
+
+                        <div class="mb-3">
+                            <label asp-for="Email" class="form-label fw-semibold">
+                            </label>
+
+                            <input asp-for="Email"
+                                   class="form-control"
+                                   type="email"
+                                   autocomplete="username"
+                                   placeholder="Enter your staff email"
+                                   autofocus />
+
+                            <span asp-validation-for="Email"
+                                  class="text-danger small">
+                            </span>
+                        </div>
+
+                        <div class="mb-4">
+                            <label asp-for="Password"
+                                   class="form-label fw-semibold">
+                            </label>
+
+                            <div class="input-group">
+                                <input asp-for="Password"
+                                       id="staffPassword"
+                                       class="form-control"
+                                       type="password"
+                                       autocomplete="current-password"
+                                       placeholder="Enter your password" />
+
+                                <!-- Toggle visibility without changing authentication behaviour. -->
+                                <button class="btn btn-outline-secondary"
+                                        type="button"
+                                        id="togglePassword"
+                                        aria-controls="staffPassword"
+                                        aria-pressed="false">
+                                    Show
+                                </button>
+                            </div>
+
+                            <span asp-validation-for="Password"
+                                  class="text-danger small">
+                            </span>
+                        </div>
+
+                        <button type="submit"
+                                class="btn btn-primary cut-login-button w-100">
+                            Sign In
+                        </button>
+                    </form>
+
+                    <div class="cut-login-footer text-center mt-4">
+                        <p class="mb-1">
+                            <strong>Restricted access</strong>
+                        </p>
+                        <p class="mb-0">
+                            Authorised clinic staff only.
+                        </p>
+                    </div>
+                </section>
+            </div>
+
+        </div>
+    </div>
+</div>
+
+@section Scripts {
+    <partial name="_ValidationScriptsPartial" />
+
+    <script>
+        // Allow staff to check their password for typing errors.
+        // This only changes the input display, not the login process.
+        document.addEventListener("DOMContentLoaded", function () {
+            const passwordInput = document.getElementById("staffPassword");
+            const toggleButton = document.getElementById("togglePassword");
+
+            if (!passwordInput || !toggleButton) {
+                return;
+            }
+
+            toggleButton.addEventListener("click", function () {
+                const isHidden = passwordInput.type === "password";
+
+                passwordInput.type = isHidden ? "text" : "password";
+                toggleButton.textContent = isHidden ? "Hide" : "Show";
+                toggleButton.setAttribute("aria-pressed", String(isHidden));
+            });
+        });
+    </script>
+}

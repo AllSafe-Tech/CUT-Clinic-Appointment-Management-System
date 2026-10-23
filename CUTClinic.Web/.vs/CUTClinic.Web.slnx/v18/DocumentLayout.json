@@ -1,0 +1,126 @@
+{
+  "Version": 1,
+  "WorkspaceRootPath": "C:\\Users\\Sgivo\\Downloads\\work\\CUTClinic.Web\\",
+  "Documents": [
+    {
+      "AbsoluteMoniker": "D:0:0:{ED525A7B-3744-62EE-9709-D43FB7E67C4A}|CUTClinic.Web.csproj|c:\\users\\sgivo\\downloads\\work\\cutclinic.web\\views\\home\\index.cshtml||{40D31677-CBC0-4297-A9EF-89D907823A98}",
+      "RelativeMoniker": "D:0:0:{ED525A7B-3744-62EE-9709-D43FB7E67C4A}|CUTClinic.Web.csproj|solutionrelative:views\\home\\index.cshtml||{40D31677-CBC0-4297-A9EF-89D907823A98}"
+    },
+    {
+      "AbsoluteMoniker": "D:0:0:{ED525A7B-3744-62EE-9709-D43FB7E67C4A}|CUTClinic.Web.csproj|c:\\users\\sgivo\\downloads\\work\\cutclinic.web\\controllers\\homecontroller.cs||{A6C744A8-0E4A-4FC6-886A-064283054674}",
+      "RelativeMoniker": "D:0:0:{ED525A7B-3744-62EE-9709-D43FB7E67C4A}|CUTClinic.Web.csproj|solutionrelative:controllers\\homecontroller.cs||{A6C744A8-0E4A-4FC6-886A-064283054674}"
+    },
+    {
+      "AbsoluteMoniker": "D:0:0:{ED525A7B-3744-62EE-9709-D43FB7E67C4A}|CUTClinic.Web.csproj|c:\\users\\sgivo\\downloads\\work\\cutclinic.web\\controllers\\appointmentrequestscontroller.cs||{A6C744A8-0E4A-4FC6-886A-064283054674}",
+      "RelativeMoniker": "D:0:0:{ED525A7B-3744-62EE-9709-D43FB7E67C4A}|CUTClinic.Web.csproj|solutionrelative:controllers\\appointmentrequestscontroller.cs||{A6C744A8-0E4A-4FC6-886A-064283054674}"
+    },
+    {
+      "AbsoluteMoniker": "D:0:0:{ED525A7B-3744-62EE-9709-D43FB7E67C4A}|CUTClinic.Web.csproj|c:\\users\\sgivo\\downloads\\work\\cutclinic.web\\services\\supabaseappointmentservice.cs||{A6C744A8-0E4A-4FC6-886A-064283054674}",
+      "RelativeMoniker": "D:0:0:{ED525A7B-3744-62EE-9709-D43FB7E67C4A}|CUTClinic.Web.csproj|solutionrelative:services\\supabaseappointmentservice.cs||{A6C744A8-0E4A-4FC6-886A-064283054674}"
+    },
+    {
+      "AbsoluteMoniker": "D:0:0:{ED525A7B-3744-62EE-9709-D43FB7E67C4A}|CUTClinic.Web.csproj|c:\\users\\sgivo\\downloads\\work\\cutclinic.web\\views\\appointmentrequests\\details.cshtml||{40D31677-CBC0-4297-A9EF-89D907823A98}",
+      "RelativeMoniker": "D:0:0:{ED525A7B-3744-62EE-9709-D43FB7E67C4A}|CUTClinic.Web.csproj|solutionrelative:views\\appointmentrequests\\details.cshtml||{40D31677-CBC0-4297-A9EF-89D907823A98}"
+    },
+    {
+      "AbsoluteMoniker": "D:0:0:{ED525A7B-3744-62EE-9709-D43FB7E67C4A}|CUTClinic.Web.csproj|c:\\users\\sgivo\\downloads\\work\\cutclinic.web\\models\\appointmentdashboarditem.cs||{A6C744A8-0E4A-4FC6-886A-064283054674}",
+      "RelativeMoniker": "D:0:0:{ED525A7B-3744-62EE-9709-D43FB7E67C4A}|CUTClinic.Web.csproj|solutionrelative:models\\appointmentdashboarditem.cs||{A6C744A8-0E4A-4FC6-886A-064283054674}"
+    }
+  ],
+  "DocumentGroupContainers": [
+    {
+      "Orientation": 0,
+      "VerticalTabListWidth": 256,
+      "DocumentGroups": [
+        {
+          "DockedWidth": 200,
+          "SelectedChildIndex": 1,
+          "Children": [
+            {
+              "$type": "Bookmark",
+              "Name": "ST:0:0:{34e76e81-ee4a-11d0-ae2e-00a0c90fffc3}"
+            },
+            {
+              "$type": "Document",
+              "DocumentIndex": 0,
+              "Title": "Index.cshtml",
+              "DocumentMoniker": "C:\\Users\\Sgivo\\Downloads\\work\\CUTClinic.Web\\Views\\Home\\Index.cshtml",
+              "RelativeDocumentMoniker": "Views\\Home\\Index.cshtml",
+              "ToolTip": "C:\\Users\\Sgivo\\Downloads\\work\\CUTClinic.Web\\Views\\Home\\Index.cshtml",
+              "RelativeToolTip": "Views\\Home\\Index.cshtml",
+              "ViewState": "AgIAAAoCAAAAAAAAAAAIwBwCAAAAAAAAAAAAAA==",
+              "Icon": "ae27a6b0-e345-4288-96df-5eaf394ee369.000759|",
+              "WhenOpened": "2026-10-21T09:24:29.31Z",
+              "EditorCaption": ""
+            },
+            {
+              "$type": "Document",
+              "DocumentIndex": 1,
+              "Title": "HomeController.cs",
+              "DocumentMoniker": "C:\\Users\\Sgivo\\Downloads\\work\\CUTClinic.Web\\Controllers\\HomeController.cs",
+              "RelativeDocumentMoniker": "Controllers\\HomeController.cs",
+              "ToolTip": "C:\\Users\\Sgivo\\Downloads\\work\\CUTClinic.Web\\Controllers\\HomeController.cs",
+              "RelativeToolTip": "Controllers\\HomeController.cs",
+              "ViewState": "AgIAAH4AAAAAAAAAAAAgwI8AAAAAAAAAAAAAAA==",
+              "Icon": "ae27a6b0-e345-4288-96df-5eaf394ee369.000738|",
+              "WhenOpened": "2026-10-21T09:21:18.711Z",
+              "EditorCaption": ""
+            },
+            {
+              "$type": "Document",
+              "DocumentIndex": 2,
+              "Title": "AppointmentRequestsController.cs",
+              "DocumentMoniker": "C:\\Users\\Sgivo\\Downloads\\work\\CUTClinic.Web\\Controllers\\AppointmentRequestsController.cs",
+              "RelativeDocumentMoniker": "Controllers\\AppointmentRequestsController.cs",
+              "ToolTip": "C:\\Users\\Sgivo\\Downloads\\work\\CUTClinic.Web\\Controllers\\AppointmentRequestsController.cs",
+              "RelativeToolTip": "Controllers\\AppointmentRequestsController.cs",
+              "ViewState": "AgIAAFoCAAAAAAAAAAAiwF8CAAABAAAAAAAAAA==",
+              "Icon": "ae27a6b0-e345-4288-96df-5eaf394ee369.000738|",
+              "WhenOpened": "2026-10-21T09:05:37.922Z",
+              "EditorCaption": ""
+            },
+            {
+              "$type": "Document",
+              "DocumentIndex": 4,
+              "Title": "Details.cshtml",
+              "DocumentMoniker": "C:\\Users\\Sgivo\\Downloads\\work\\CUTClinic.Web\\Views\\AppointmentRequests\\Details.cshtml",
+              "RelativeDocumentMoniker": "Views\\AppointmentRequests\\Details.cshtml",
+              "ToolTip": "C:\\Users\\Sgivo\\Downloads\\work\\CUTClinic.Web\\Views\\AppointmentRequests\\Details.cshtml",
+              "RelativeToolTip": "Views\\AppointmentRequests\\Details.cshtml",
+              "ViewState": "AgIAAMQBAAAAAAAAAAAkwNgBAAAAAAAAAAAAAA==",
+              "Icon": "ae27a6b0-e345-4288-96df-5eaf394ee369.000759|",
+              "WhenOpened": "2026-10-21T09:03:46.233Z",
+              "EditorCaption": ""
+            },
+            {
+              "$type": "Document",
+              "DocumentIndex": 3,
+              "Title": "SupabaseAppointmentService.cs",
+              "DocumentMoniker": "C:\\Users\\Sgivo\\Downloads\\work\\CUTClinic.Web\\Services\\SupabaseAppointmentService.cs",
+              "RelativeDocumentMoniker": "Services\\SupabaseAppointmentService.cs",
+              "ToolTip": "C:\\Users\\Sgivo\\Downloads\\work\\CUTClinic.Web\\Services\\SupabaseAppointmentService.cs",
+              "RelativeToolTip": "Services\\SupabaseAppointmentService.cs",
+              "ViewState": "AgIAAKABAAAAAAAAAAAnwKYBAAAJAAAAAAAAAA==",
+              "Icon": "ae27a6b0-e345-4288-96df-5eaf394ee369.000738|",
+              "WhenOpened": "2026-10-21T09:03:08.093Z",
+              "EditorCaption": ""
+            },
+            {
+              "$type": "Document",
+              "DocumentIndex": 5,
+              "Title": "AppointmentDashboardItem.cs",
+              "DocumentMoniker": "C:\\Users\\Sgivo\\Downloads\\work\\CUTClinic.Web\\Models\\AppointmentDashboardItem.cs",
+              "RelativeDocumentMoniker": "Models\\AppointmentDashboardItem.cs",
+              "ToolTip": "C:\\Users\\Sgivo\\Downloads\\work\\CUTClinic.Web\\Models\\AppointmentDashboardItem.cs",
+              "RelativeToolTip": "Models\\AppointmentDashboardItem.cs",
+              "ViewState": "AgIAADwAAAAAAAAAAAAuwE8AAAAAAAAAAAAAAA==",
+              "Icon": "ae27a6b0-e345-4288-96df-5eaf394ee369.000738|",
+              "WhenOpened": "2026-10-21T09:01:37.434Z",
+              "EditorCaption": ""
+            }
+          ]
+        }
+      ]
+    }
+  ]
+}
